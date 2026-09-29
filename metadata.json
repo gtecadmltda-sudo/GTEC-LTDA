@@ -1,0 +1,6 @@
+{
+  "name": "MEI-Simple",
+  "description": "ERP simples, fluido, moderno e intuitivo desenvolvido para gestão ágil e descomplicada do Microempreendedor Individual (MEI) brasileiro.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

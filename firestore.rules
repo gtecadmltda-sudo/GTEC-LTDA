@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regras de acesso para as coleções do MEI-Simple
+    match /clients/{docId} {
+      allow read, write: if true;
+    }
+
+    match /suppliers/{docId} {
+      allow read, write: if true;
+    }
+
+    match /employees/{docId} {
+      allow read, write: if true;
+    }
+
+    match /products/{docId} {
+      allow read, write: if true;
+    }
+
+    match /services/{docId} {
+      allow read, write: if true;
+    }
+
+    match /categories/{docId} {
+      allow read, write: if true;
+    }
+
+    match /transactions/{docId} {
+      allow read, write: if true;
+    }
+
+    match /stockMovements/{docId} {
+      allow read, write: if true;
+    }
+
+    match /invoices/{docId} {
+      allow read, write: if true;
+    }
+
+    match /dasPayments/{docId} {
+      allow read, write: if true;
+    }
+
+    match /goals/{docId} {
+      allow read, write: if true;
+    }
+
+    match /auditLogs/{docId} {
+      allow read, write: if true;
+    }
+
+    match /customReports/{docId} {
+      allow read, write: if true;
+    }
+
+    match /preferences/{docId} {
+      allow read, write: if true;
+    }
+
+    match /users/{docId} {
+      allow read, write: if true;
+    }
+
+    match /chatHistory/{docId} {
+      allow read, write: if true;
+    }
+
+    // Documento de teste público para verificação de conectividade
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+
+    // Bloqueio por padrão para qualquer outro caminho não especificado
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

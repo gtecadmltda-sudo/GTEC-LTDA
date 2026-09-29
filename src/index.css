@@ -1,0 +1,541 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Variáveis globais (fontes, layout e Paint Worklet)
+   ========================================================================== */
+:root {
+  /* Tipografia */
+  --font-display: 'Comfortaa', cursive, sans-serif;
+  --font-sans: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-base: var(--font-sans);
+
+  /* Layout (usadas em .main-content-scroll; mantenha em sincronia com Sidebar/Header) */
+  --sidebar-width: 256px;
+  --header-height: 64px;
+  --content-vh-offset: 80px;
+
+  /* Paint Worklet de distorção líquida (só têm efeito se o worklet as ler via inputProperties) */
+  --liquid-scale: 24;
+  --liquid-frequency-x: 1;
+  --liquid-frequency-y: 0.001;
+  --liquid-scroll: 5;
+  --liquid-tint: rgba(10, 16, 24, 0.78);
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display) !important;
+}
+
+body, table, input, select, textarea, button, p, span, label, .font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-comfortaa {
+  font-family: var(--font-display) !important;
+}
+
+.font-inter {
+  font-family: var(--font-sans) !important;
+}
+
+/* Preservação de fontes monoespaçadas para códigos, chaves e identificadores */
+code, pre, kbd, samp, .font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+/* Adaptação de layout e tamanho para ícones Font Awesome integrados com Tailwind */
+i[class*="fa-"],
+span[class*="fa-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+/* Mapeamento de dimensões Tailwind para tamanho de glifo Font Awesome
+   (a ordem importa: as variantes .5 vêm depois para sobrescrever as inteiras) */
+i[class*="w-3"][class*="h-3"] { font-size: 0.75rem; }
+i[class*="w-3.5"][class*="h-3.5"] { font-size: 0.875rem; }
+i[class*="w-4"][class*="h-4"] { font-size: 1rem; }
+i[class*="w-4.5"][class*="h-4.5"] { font-size: 1.125rem; }
+i[class*="w-5"][class*="h-5"] { font-size: 1.25rem; }
+i[class*="w-6"][class*="h-6"] { font-size: 1.5rem; }
+i[class*="w-7"][class*="h-7"] { font-size: 1.75rem; }
+i[class*="w-8"][class*="h-8"] { font-size: 2rem; }
+
+/* Padronização Global da Altura de Inputs (h-11 / 44px) */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="color"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+select {
+  min-height: 44px;
+}
+
+/* Scrollbars modernas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Focus rings com o roxo secundário da marca */
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none;
+  border-color: #199f5c;
+  box-shadow: 0 0 0 3px rgba(94, 23, 235, 0.15);
+}
+
+/* ==========================================================================
+   Paleta da marca
+   ========================================================================== */
+.bg-brand-primary { background-color: #2dd683; }
+.bg-brand-primary-hover:hover { background-color: #25be73; }
+.bg-brand-primary-light { background-color: #eafbf3; }
+.text-brand-primary { color: #199f5c; }
+.text-brand-primary-dark { color: #064e28; }
+.border-brand-primary { border-color: #2dd683; }
+.border-brand-primary-light { border-color: #a7f3d0; }
+
+/* Roxo secundário (#5E17EB) */
+.bg-brand-purple { background-color: #5E17EB; }
+.bg-brand-purple-hover:hover { background-color: #4c0ec7; }
+.bg-brand-purple-light { background-color: #f3ecfd; }
+.text-brand-purple { color: #5E17EB; }
+.border-brand-purple { border-color: #5E17EB; }
+.border-brand-purple-light { border-color: #ddd0fb; }
+
+/* Azul secundário (#004AAD) */
+.bg-brand-blue { background-color: #004AAD; }
+.bg-brand-blue-hover:hover { background-color: #003b8a; }
+.bg-brand-blue-light { background-color: #e6effa; }
+.text-brand-blue { color: #004AAD; }
+.border-brand-blue { border-color: #004AAD; }
+.border-brand-blue-light { border-color: #b8d4f6; }
+
+/* Complementar (#cb6ce6) */
+.bg-brand-complementary { background-color: #cb6ce6; }
+.bg-brand-complementary-light { background-color: #fbf0fd; }
+.text-brand-complementary { color: #9c27b0; }
+.border-brand-complementary { border-color: #cb6ce6; }
+.border-brand-complementary-light { border-color: #f1cbf9; }
+
+/* ==========================================================================
+   Tokens semânticos (#2e7d32, #c62828, #ffee58)
+   ========================================================================== */
+.text-semantic-success { color: var(--color-semantic-success) !important; }
+.bg-semantic-success { background-color: var(--color-semantic-success) !important; }
+.border-semantic-success { border-color: var(--color-semantic-success) !important; }
+.bg-semantic-success-light { background-color: var(--color-semantic-success-bg) !important; }
+.border-semantic-success-light { border-color: var(--color-semantic-success-border) !important; }
+
+.text-semantic-danger { color: var(--color-semantic-danger) !important; }
+.bg-semantic-danger { background-color: var(--color-semantic-danger) !important; }
+.border-semantic-danger { border-color: var(--color-semantic-danger) !important; }
+.bg-semantic-danger-light { background-color: var(--color-semantic-danger-bg) !important; }
+.border-semantic-danger-light { border-color: var(--color-semantic-danger-border) !important; }
+
+.text-semantic-warning {
+  color: #854d0e !important; /* Âmbar de alto contraste para texto (WCAG AA) */
+}
+.text-semantic-warning-raw { color: var(--color-semantic-warning) !important; }
+.bg-semantic-warning { background-color: var(--color-semantic-warning) !important; }
+.border-semantic-warning { border-color: var(--color-semantic-warning) !important; }
+.bg-semantic-warning-light { background-color: var(--color-semantic-warning-bg) !important; }
+.border-semantic-warning-light { border-color: var(--color-semantic-warning-border) !important; }
+
+/* Gradientes */
+.bg-logo-gradient {
+  background: linear-gradient(135deg, #2dd683 0%, #004AAD 50%, #5E17EB 100%);
+}
+
+.text-logo-gradient {
+  background: linear-gradient(135deg, #000000 0%, #5E17EB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Sidebar */
+.mei-simple-sidebar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+/* ==========================================================================
+   Container Fiscal - Acessibilidade WCAG AA
+   ========================================================================== */
+.fiscal-container { color: #222222; }
+.dark .fiscal-container { color: #f8fafc; }
+
+.fiscal-container .fiscal-card-nfe { border: 1px solid rgba(0, 74, 173, 0.22); }
+.dark .fiscal-container .fiscal-card-nfe { border: 1px solid rgba(0, 74, 173, 0.45); }
+
+.fiscal-container .fiscal-card-nfse { border: 1px solid rgba(94, 23, 235, 0.22); }
+.dark .fiscal-container .fiscal-card-nfse { border: 1px solid rgba(94, 23, 235, 0.45); }
+
+.fiscal-container .fiscal-badge-nfe {
+  background-color: #e6effa;
+  color: #00367d;
+  border: 1px solid #b8d4f6;
+}
+.dark .fiscal-container .fiscal-badge-nfe {
+  background-color: rgba(0, 74, 173, 0.25);
+  color: #bfdbfe;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.fiscal-container .fiscal-badge-nfse {
+  background-color: #f3ecfd;
+  color: #420bb8;
+  border: 1px solid #ddd0fb;
+}
+.dark .fiscal-container .fiscal-badge-nfse {
+  background-color: rgba(94, 23, 235, 0.25);
+  color: #e9d5ff;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+/* ==========================================================================
+   LIQUID GLASS - Superfícies base
+   ========================================================================== */
+
+/* Header (CABEÇALHO) */
+.app-header,
+.mei-header,
+.apple-liquid-glass-header {
+  border-radius: 1.25rem;
+  background: rgba(15, 23, 34, 0.173);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.18), inset 0 -4px 10px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+@media (min-width: 640px) {
+  .app-header,
+  .mei-header,
+  .apple-liquid-glass-header {
+    border-radius: 1.5rem;
+  }
+}
+
+/* Padrão oficial reutilizável: .liquid-glass */
+.liquid-glass {
+  position: relative;
+  background: rgba(10, 16, 24, 0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(190%) contrast(115%);
+  backdrop-filter: blur(20px) saturate(190%) contrast(115%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 1px 1.5px rgba(255, 255, 255, 0.28), inset 0 -1px 1.5px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Botão flutuante de pesquisa */
+.floating-liquid-glass-search {
+  position: fixed;
+  z-index: 40;
+  border-radius: 9999px;
+  background: rgba(10, 16, 24, 0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(190%) contrast(115%);
+  backdrop-filter: blur(20px) saturate(190%) contrast(115%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 1px 1.5px rgba(255, 255, 255, 0.28), inset 0 -1px 1.5px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-liquid-glass-search:hover {
+  background: rgba(15, 23, 34, 0.92);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.68), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transform: scale(1.08);
+}
+
+.floating-liquid-glass-search:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* Container do carrossel */
+.carrossel-liquid-glass {
+  background: rgba(10, 16, 24, 0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(190%) contrast(115%);
+  backdrop-filter: blur(20px) saturate(190%) contrast(115%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+/* Painel 3D genérico */
+.glass-panel-3d {
+  background: rgba(15, 23, 34, 0.65);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    inset 0 -4px 10px rgba(0, 0, 0, 0.8),
+    0 16px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Elementos interativos em Liquid Glass */
+.liquid-glass-interactive:hover {
+  background: rgba(15, 23, 34, 0.92);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.68), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transform: scale(1.08);
+}
+
+.liquid-glass-interactive:active {
+  transform: scale(1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Reflexo especular superior (regra ÚNICA para todas as superfícies de vidro)
+   Variáveis permitem variação por componente sem conflito de ::before
+   ========================================================================== */
+.app-header::before,
+.mei-header::before,
+.apple-liquid-glass-header::before,
+.liquid-glass::before,
+.floating-liquid-glass-search::before,
+.carrossel-liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--glass-shine-height, 50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, var(--glass-shine-opacity, 0.22)) 0%, rgba(255, 255, 255, 0.02) 100%);
+  pointer-events: none;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  z-index: var(--glass-shine-z, auto);
+}
+
+.liquid-glass,
+.floating-liquid-glass-search {
+  --glass-shine-opacity: 0.28;
+}
+
+.liquid-glass {
+  --glass-shine-z: 1;
+}
+
+.carrossel-liquid-glass {
+  --glass-shine-height: 45%;
+  --glass-shine-opacity: 0.18;
+}
+
+/* ==========================================================================
+   Distorção líquida via filtro SVG (Chromium)
+   ========================================================================== */
+@supports (backdrop-filter: url(#liquid-distortion)) or (-webkit-backdrop-filter: url(#liquid-distortion)) {
+  .app-header,
+  .mei-header,
+  .apple-liquid-glass-header {
+    -webkit-backdrop-filter: blur(4px) saturate(190%) url(#liquid-distortion);
+    backdrop-filter: blur(4px) saturate(190%) url(#liquid-distortion);
+  }
+
+  .liquid-glass {
+    -webkit-backdrop-filter: blur(4px) saturate(190%) contrast(115%) url(#liquid-distortion);
+    backdrop-filter: blur(4px) saturate(190%) contrast(115%) url(#liquid-distortion);
+  }
+
+  .floating-liquid-glass-search {
+    -webkit-backdrop-filter: url(#liquid-distortion) saturate(160%) contrast(108%);
+    backdrop-filter: url(#liquid-distortion) saturate(160%) contrast(108%);
+  }
+}
+
+@supports (backdrop-filter: url(#carrossel-liquid-distortion)) or (-webkit-backdrop-filter: url(#carrossel-liquid-distortion)) {
+  .carrossel-liquid-glass {
+    -webkit-backdrop-filter: url(#carrossel-liquid-distortion) blur(18px) saturate(190%);
+    backdrop-filter: url(#carrossel-liquid-distortion) blur(18px) saturate(190%);
+  }
+}
+
+/* ==========================================================================
+   CSS Houdini Paint Worklet (renderização na GPU, sem tocar no DOM) 
+   MORTO-GTEC (VERIFICAR E DELETAR)
+   ========================================================================== 
+@supports (background-image: paint(liquid-distortion)) {
+  .app-header,
+  .mei-header,
+  .apple-liquid-glass-header,
+  .liquid-glass,
+  .floating-liquid-glass-search,
+  .carrossel-liquid-glass {
+    background-image: paint(liquid-distortion);
+    background-color: transparent;
+  }
+} 
+
+ Ativado via JS quando o worklet é registrado com sucesso 
+.has-paint-worklet .app-header,
+.has-paint-worklet .mei-header,
+.has-paint-worklet .apple-liquid-glass-header,
+.has-paint-worklet .liquid-glass,
+.has-paint-worklet .floating-liquid-glass-search,
+.has-paint-worklet .carrossel-liquid-glass {
+  background-image: paint(liquid-distortion);
+  background-color: transparent;
+}*/
+
+
+.has-paint-worklet .app-header,
+.has-paint-worklet .mei-header,
+.has-paint-worklet .apple-liquid-glass-header,
+.has-paint-worklet .liquid-glass,
+.has-paint-worklet .floating-liquid-glass-search,
+.has-paint-worklet .carrossel-liquid-glass {
+  background-image: paint(liquid-distortion);
+  background-repeat: no-repeat;
+  /* Sem background-color: a tintura rgba de cada componente é preservada */
+}
+
+
+/* ==========================================================================
+   Fallback para navegadores sem suporte a backdrop-filter (incluindo prefixo)
+   ========================================================================== */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .app-header,
+  .mei-header,
+  .apple-liquid-glass-header,
+  .liquid-glass,
+  .floating-liquid-glass-search,
+  .carrossel-liquid-glass {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* ==========================================================================
+   Botões e SearchBar do Header
+   ========================================================================== */
+.mei-header-btn,
+.apple-liquid-glass-btn {
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #ffffff;
+}
+
+.mei-header-btn:hover,
+.apple-liquid-glass-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transform: translateY(-0.5px);
+}
+
+.mei-header-btn:active,
+.apple-liquid-glass-btn:active {
+  transform: translateY(0.5px);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mei-header-search,
+.apple-liquid-glass-search {
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #ffffff;
+}
+
+.mei-header-search:focus-within,
+.apple-liquid-glass-search:focus-within {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(45, 214, 131, 0.85);
+  box-shadow: 0 0 0 2.5px rgba(45, 214, 131, 0.25), 0 6px 18px -4px rgba(0, 0, 0, 0.3);
+}
+
+/* Painel flutuante de resultados da SearchBar */
+.mei-header-dropdown,
+.apple-liquid-glass-dropdown {
+  background: rgba(15, 23, 42, 0.94);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+    0 20px 40px -10px rgba(0, 0, 0, 0.5),
+    0 8px 16px -4px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   Navegação (Mobile & Interações) - Pill hover e item ativo
+   ========================================================================== */
+.liquid-hover-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* Fallback com blur simples; a linha seguinte é descartada se o navegador não suportar url() */
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: url(#liquid-distortion) blur(4px);
+  backdrop-filter: url(#liquid-distortion) blur(4px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease-out;
+}
+
+.liquid-hover-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+
+.liquid-active-green {
+  background: rgba(45, 214, 131, 0.15);
+  border: 1px solid rgba(45, 214, 131, 0.35);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 0 16px rgba(45, 214, 131, 0.25),
+    0 4px 12px rgba(45, 214, 131, 0.15);
+}
+
+
+/* ==========================================================================
+   Área de conteúdo rolável única
+   ========================================================================== */
+.main-content-scroll {
+  height: 100vh; /* Ocupa a tela toda para rolar por baixo do vidro */
+  overflow-y: auto;
+  padding-left: calc(var(--sidebar-width) + 20mm);
+  padding-top: calc(var(--header-height) + 20mm);
+  padding-right: 10mm;
+  padding-bottom: 20mm;
+}
+
+@media (max-width: :-webkit-full-screen) {
+  .main-content-scroll {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: calc(var(--header-height) + 16px);
+  }
+}

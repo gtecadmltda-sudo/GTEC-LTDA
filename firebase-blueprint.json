@@ -1,0 +1,286 @@
+{
+  "entities": {
+    "Client": {
+      "title": "Client",
+      "description": "Dados cadastrais de clientes da MEI",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string" },
+        "documento": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["PF", "PJ"] },
+        "cep": { "type": "string" },
+        "logradouro": { "type": "string" },
+        "bairro": { "type": "string" },
+        "cidade": { "type": "string" },
+        "uf": { "type": "string" },
+        "telefone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "adimplente": { "type": "boolean" },
+        "historicoCompras": { "type": "array" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "nome", "documento", "tipo", "userId"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Fornecedores e parceiros comerciais de insumos",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "razaoSocial": { "type": "string" },
+        "cnpj": { "type": "string" },
+        "contatoNome": { "type": "string" },
+        "telefone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "condicoesPagamento": { "type": "string" },
+        "historicoPedidos": { "type": "array" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "razaoSocial", "cnpj", "userId"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Funcionário único permitido por lei para MEI",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string" },
+        "cpf": { "type": "string" },
+        "cargo": { "type": "string" },
+        "remuneracao": { "type": "number" },
+        "dataAdmissao": { "type": "string", "format": "date" },
+        "documentacao": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "nome", "cpf", "userId"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Itens do estoque e mercadorias comercializadas",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string" },
+        "sku": { "type": "string" },
+        "precoCusto": { "type": "number" },
+        "precoVenda": { "type": "number" },
+        "estoqueAtual": { "type": "integer" },
+        "estoqueMinimo": { "type": "integer" },
+        "unidadeMedida": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "nome", "estoqueAtual", "userId"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Serviços prestados cadastrados no catálogo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string" },
+        "precoSugerido": { "type": "number" },
+        "descricao": { "type": "string" },
+        "duracaoEstimada": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "nome", "precoSugerido", "userId"]
+    },
+    "FinancialCategory": {
+      "title": "FinancialCategory",
+      "description": "Categorias de receitas e despesas do Plano de Contas",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "codigo": { "type": "string" },
+        "nome": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["RECEITA", "DESPESA"] },
+        "descricao": { "type": "string" },
+        "padraoMEI": { "type": "boolean" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "codigo", "nome", "tipo", "userId"]
+    },
+    "FinancialTransaction": {
+      "title": "FinancialTransaction",
+      "description": "Lançamentos e movimentações de caixa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "data": { "type": "string", "format": "date" },
+        "dataVencimento": { "type": "string", "format": "date" },
+        "tipo": { "type": "string", "enum": ["RECEITA", "DESPESA"] },
+        "categoriaId": { "type": "string" },
+        "descricao": { "type": "string" },
+        "valor": { "type": "number" },
+        "status": { "type": "string", "enum": ["PENDENTE", "PAGO", "ATRASADO", "CANCELADO"] },
+        "comprovanteUrl": { "type": "string" },
+        "comprovanteNome": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "data", "tipo", "categoriaId", "valor", "status", "userId"]
+    },
+    "StockMovement": {
+      "title": "StockMovement",
+      "description": "Histórico de entradas e saídas de estoque",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["ENTRADA", "SAIDA"] },
+        "quantidade": { "type": "integer" },
+        "data": { "type": "string", "format": "date" },
+        "motivo": { "type": "string" },
+        "responsavel": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "productId", "tipo", "quantidade", "data", "userId"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Notas fiscais emitidas (simuladas)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "numero": { "type": "string" },
+        "chaveAcesso": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["NFE", "NFSE"] },
+        "dataEmissao": { "type": "string", "format": "date" },
+        "destinatarioNome": { "type": "string" },
+        "destinatarioDocumento": { "type": "string" },
+        "valorTotal": { "type": "number" },
+        "itens": { "type": "array" },
+        "status": { "type": "string", "enum": ["RASCUNHO", "HOMOLOGACAO", "PRODUCAO", "CANCELADA"] },
+        "pdfUrl": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "numero", "tipo", "dataEmissao", "destinatarioNome", "valorTotal", "status", "userId"]
+    },
+    "DASPayment": {
+      "title": "DASPayment",
+      "description": "Guias mensais de tributo DAS-MEI",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "periodoReferencia": { "type": "string" },
+        "dataVencimento": { "type": "string", "format": "date" },
+        "valor": { "type": "number" },
+        "status": { "type": "string", "enum": ["PENDENTE", "PAGO", "ATRASADO"] },
+        "dataPagamento": { "type": "string", "format": "date" },
+        "pdfUrl": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "periodoReferencia", "dataVencimento", "valor", "status", "userId"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Metas de faturamento e vendas",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tipo": { "type": "string", "enum": ["FATURAMENTO_ANUAL", "FATURAMENTO_MENSAL", "VENDA_PRODUTO", "VENDA_SERVICO"] },
+        "valorAlvo": { "type": "number" },
+        "periodo": { "type": "string" },
+        "unidade": { "type": "string", "enum": ["REAIS", "UNIDADES"] },
+        "targetId": { "type": "string" },
+        "targetName": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "tipo", "valorAlvo", "periodo", "unidade", "userId"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Logs de auditoria e segurança LGPD",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "usuario": { "type": "string" },
+        "modulo": { "type": "string" },
+        "acao": { "type": "string", "enum": ["CRIACAO", "EDICAO", "EXCLUSAO", "EXPORTACAO", "LOGIN", "ALTERACAO_SENHA"] },
+        "descricao": { "type": "string" },
+        "ip": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "timestamp", "usuario", "modulo", "acao", "descricao", "userId"]
+    },
+    "CustomReportConfig": {
+      "title": "CustomReportConfig",
+      "description": "Configurações de relatórios personalizados criados pelo usuário",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nome": { "type": "string" },
+        "descricao": { "type": "string" },
+        "tipoFonte": { "type": "string", "enum": ["TRANSACOES", "CLIENTES", "NOTAS_FISCAIS", "ESTOQUE"] },
+        "campos": { "type": "array" },
+        "filtros": { "type": "object" },
+        "agrupamento": { "type": "string", "enum": ["nenhum", "categoria", "tipo", "status", "data_mes", "cliente", "adimplente"] },
+        "ordenador": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "nome", "tipoFonte", "campos", "userId"]
+    },
+    "UserPreference": {
+      "title": "UserPreference",
+      "description": "Preferência de configuração do usuário",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "value": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "value", "userId"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Perfil de usuário autenticado no sistema via Firebase Auth",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "document": { "type": "string" },
+        "cargo": { "type": "string" },
+        "status": { "type": "string" },
+        "foto": { "type": "string" }
+      },
+      "required": ["id", "name", "email"]
+    },
+    "ChatMessageRecord": {
+      "title": "ChatMessageRecord",
+      "description": "Registro de mensagem no histórico do assistente Gemini",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "modelUsed": { "type": "string" },
+        "groundingUsed": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "role", "content"]
+    }
+  },
+  "firestore": {
+    "clients": { "schema": "Client", "description": "Contatos e clientes cadastrados" },
+    "suppliers": { "schema": "Supplier", "description": "Fornecedores de madeira e insumos marcenaria" },
+    "employees": { "schema": "Employee", "description": "Folha cadastral de funcionários" },
+    "products": { "schema": "Product", "description": "Estoque de produtos" },
+    "services": { "schema": "Service", "description": "Catálogo de serviços" },
+    "categories": { "schema": "FinancialCategory", "description": "Estrutura do plano de contas para DRE" },
+    "transactions": { "schema": "FinancialTransaction", "description": "Livro caixa e faturamento" },
+    "stockMovements": { "schema": "StockMovement", "description": "Movimentações físicas de peças e chapas" },
+    "invoices": { "schema": "Invoice", "description": "Arquivo de NFS-e e NF-e emitidas" },
+    "dasPayments": { "schema": "DASPayment", "description": "Guia mensal DAS-MEI" },
+    "goals": { "schema": "Goal", "description": "Metas estabelecidas para faturamento" },
+    "auditLogs": { "schema": "AuditLog", "description": "Logs de conformidade com LGPD" },
+    "customReports": { "schema": "CustomReportConfig", "description": "Relatórios customizados salvos pelo MEI" },
+    "preferences": { "schema": "UserPreference", "description": "Preferências de interface e configurações do usuário" },
+    "users": { "schema": "UserProfile", "description": "Perfis de usuários persistidos no Firestore" },
+    "chatHistory": { "schema": "ChatMessageRecord", "description": "Histórico do chat com Gemini" }
+  }
+}
